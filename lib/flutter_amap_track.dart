@@ -3,7 +3,6 @@ library flutter_amap_track;
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_amap_track/model/enum/ios_cl_activity_type.dart';
 import 'package:flutter_amap_track/model/request/add_terminal_request.dart';

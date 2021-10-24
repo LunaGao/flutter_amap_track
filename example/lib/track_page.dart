@@ -17,7 +17,7 @@ class TrackPage extends StatefulWidget {
 
 class _TrackPageState extends State<TrackPage> {
   List<String> consoles = [];
-  int trid;
+  late int trid;
 
   @override
   Widget build(BuildContext context) {
