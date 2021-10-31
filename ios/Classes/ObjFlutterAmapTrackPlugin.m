@@ -19,13 +19,13 @@ static AMapTrackManager* trackManager;
     if ([@"setIOSApiKey" isEqualToString:call.method]) {
         NSString* apiKey = params[@"apiKey"];
         NSLog(@"setIOSApiKey: %@", apiKey);
-        if (apiKey != nil) {
+        if (![apiKey isKindOfClass:[NSNull class]]) {
             NSLog(@"apikey:\(apiKey!)");
             [AMapServices sharedServices].apiKey = apiKey;
         }
     } else if ([@"initWithServiceId" isEqualToString:call.method]) {
         NSString* sid_str = params[@"sid"];
-        if (sid_str != nil) {
+        if (![sid_str isKindOfClass:[NSNull class]]) {
             int sid = [sid_str intValue];
             AMapTrackManagerOptions * option = [[AMapTrackManagerOptions alloc] init];
             [option setServiceID:[NSString stringWithFormat:@"%d", sid]];
@@ -35,14 +35,14 @@ static AMapTrackManager* trackManager;
         }
     } else if ([@"setCacheSize" isEqualToString:call.method]) {
         NSString* cacheSize_str = params[@"cacheSize"];
-        if (cacheSize_str != nil) {
+        if (![cacheSize_str isKindOfClass:[NSNull class]]) {
             int cacheSize = [cacheSize_str intValue];
             [trackManager setLocalCacheMaxSize:cacheSize];
         }
     } else if ([@"setInterval" isEqualToString:call.method]) {
         NSString* gatherInterval_str = params[@"gatherInterval"];
         NSString* packInterval_str = params[@"packInterval"];
-        if (gatherInterval_str != nil && packInterval_str != nil) {
+        if (![gatherInterval_str isKindOfClass:[NSNull class]] && ![packInterval_str isKindOfClass:[NSNull class]]) {
             int gatherInterval = [gatherInterval_str intValue];
             int packInterval = [packInterval_str intValue];
             [trackManager changeGatherAndPackTimeInterval:gatherInterval packTimeInterval:packInterval];
@@ -57,7 +57,7 @@ static AMapTrackManager* trackManager;
             [trackManager setPausesLocationUpdatesAutomatically:pausesLocationUpdatesAutomatically];
         }
         NSString* activityType_str = params[@"activityType"];
-        if (activityType_str != nil) {
+        if (![activityType_str isKindOfClass:[NSNull class]]) {
             int activityType = [activityType_str intValue];
             switch (activityType) {
                 case 0:
@@ -82,12 +82,12 @@ static AMapTrackManager* trackManager;
         NSString* terminal = params[@"terminal"];
         NSString* terminalDesc = params[@"terminalDesc"];
         AMapTrackAddTerminalRequest *request = [[AMapTrackAddTerminalRequest alloc] init];
-        if (sid_str != nil) {
+        if (![sid_str isKindOfClass:[NSNull class]]) {
             [request setServiceID:sid_str];
         }
-        if (terminal != nil) {
+        if (![terminal isKindOfClass:[NSNull class]]) {
             [request setTerminalName:terminal];
-            if (terminalDesc != nil) {
+            if (![terminalDesc isKindOfClass:[NSNull class]]) {
                 [request setTerminalDesc:terminalDesc];
             }
             [trackManager AMapTrackAddTerminal:request];
@@ -97,13 +97,13 @@ static AMapTrackManager* trackManager;
         NSString* terminal = params[@"terminal"];
         NSString* terminalId_str = params[@"terminalId"];
         AMapTrackQueryTerminalRequest * request = [[AMapTrackQueryTerminalRequest alloc] init];
-        if (sid_str != nil) {
+        if (![sid_str isKindOfClass:[NSNull class]]) {
             [request setServiceID:sid_str];
         }
-        if (terminal != nil) {
+        if (![terminal isKindOfClass:[NSNull class]]) {
             [request setTerminalName:terminal];
         }
-        if (terminalId_str != nil) {
+        if (![terminalId_str isKindOfClass:[NSNull class]]) {
             [request setTerminalID:terminalId_str];
         }
         [trackManager AMapTrackQueryTerminal:request];
@@ -111,10 +111,10 @@ static AMapTrackManager* trackManager;
         NSString* sid_str = params[@"sid"];
         NSString* tid_str = params[@"tid"];
         AMapTrackAddTrackRequest* request = [[AMapTrackAddTrackRequest alloc] init];
-        if (sid_str != nil) {
+        if (![sid_str isKindOfClass:[NSNull class]]) {
             [request setServiceID:sid_str];
         }
-        if (tid_str != nil) {
+        if (![tid_str isKindOfClass:[NSNull class]]) {
             [request setTerminalID:tid_str];
         }
         [trackManager AMapTrackAddTrack:request];
@@ -122,7 +122,7 @@ static AMapTrackManager* trackManager;
         NSString* tid_str = params[@"tid"];
         NSString* trid_str = params[@"trid"];
         AMapTrackDeleteTrackRequest *request = [[AMapTrackDeleteTrackRequest alloc] init];
-        if (tid_str != nil && trid_str != nil) {
+        if (![tid_str isKindOfClass:[NSNull class]] && ![trid_str isKindOfClass:[NSNull class]]) {
             [request setTerminalID:tid_str];
             [request setTrackID:trid_str];
         }
@@ -131,11 +131,11 @@ static AMapTrackManager* trackManager;
         NSString* tid_str = params[@"tid"];
         NSString* trackId_str = params[@"trackId"];
         AMapTrackManagerServiceOption * option = [[AMapTrackManagerServiceOption alloc] init];
-        if (tid_str != nil) {
+        if (![tid_str isKindOfClass:[NSNull class]]) {
             [option setTerminalID:tid_str];
         }
         [trackManager startServiceWithOptions:option];
-        if (trackId_str != nil) {
+        if (![trackId_str isKindOfClass:[NSNull class]]) {
             [trackManager setTrackID:trackId_str];
         }
     } else if ([@"stopTrack" isEqualToString:call.method]) {
@@ -148,7 +148,7 @@ static AMapTrackManager* trackManager;
         result([trackManager trackID]);
     } else if ([@"setTrackId" isEqualToString:call.method]) {
         NSString* trackId_str = params[@"trackId"];
-        if (trackId_str != nil) {
+        if (![trackId_str isKindOfClass:[NSNull class]]) {
             [trackManager setTrackID:trackId_str];
         }
     } else if ([@"queryLatestPoint" isEqualToString:call.method]) {
@@ -157,17 +157,17 @@ static AMapTrackManager* trackManager;
         NSString* trid_str = params[@"trid"];
         NSString* correction_str = params[@"correction"];
         AMapTrackQueryLastPointRequest * request = [[AMapTrackQueryLastPointRequest alloc] init];
-        if (sid_str != nil) {
+        if (![sid_str isKindOfClass:[NSNull class]]) {
             [request setServiceID:sid_str];
         }
-        if (tid_str != nil) {
+        if (![tid_str isKindOfClass:[NSNull class]]) {
             [request setTerminalID:tid_str];
         }
-        if (trid_str != nil) {
+        if (![trid_str isKindOfClass:[NSNull class]]) {
             [request setTrackID:trid_str];
         }
         NSString* correctionMode = @"n";
-        if (correction_str != nil && [correction_str intValue] == 1) {
+        if (![correction_str isKindOfClass:[NSNull class]] && [correction_str intValue] == 1) {
             correctionMode = @"driving";
         }
         [request setCorrectionMode:correctionMode];
@@ -182,20 +182,20 @@ static AMapTrackManager* trackManager;
         NSString* recoup_str = params[@"recoup"];
         NSString* gap_str = params[@"gap"];
         AMapTrackQueryTrackDistanceRequest * request = [[AMapTrackQueryTrackDistanceRequest alloc] init];
-        if (sid_str != nil) {
+        if (![sid_str isKindOfClass:[NSNull class]]) {
             [request setServiceID:sid_str];
         }
-        if (tid_str != nil && trid_str != nil && startTime_str != nil && endTime_str != nil) {
+        if (![tid_str isKindOfClass:[NSNull class]] && ![trid_str isKindOfClass:[NSNull class]] && ![startTime_str isKindOfClass:[NSNull class]] && ![endTime_str isKindOfClass:[NSNull class]]) {
             [request setTerminalID:tid_str];
             [request setTrackID:trid_str];
             [request setStartTime:[startTime_str longLongValue]];
             [request setEndTime:[endTime_str longLongValue]];
             NSString* correctionMode = @"n";
-            if (correction_str != nil && [correction_str intValue] == 1) {
+            if (![correction_str isKindOfClass:[NSNull class]] && [correction_str intValue] == 1) {
                 correctionMode = @"driving";
             }
             [request setCorrectionMode:correctionMode];
-            if (recoup_str != nil && [recoup_str intValue] == 1) {
+            if (![recoup_str isKindOfClass:[NSNull class]] && [recoup_str intValue] == 1) {
                 [request setRecoupMode:AMapTrackRecoupModeDriving];
             } else {
                 [request setRecoupMode:AMapTrackRecoupModeNone];
@@ -216,32 +216,32 @@ static AMapTrackManager* trackManager;
         NSString* page_str = params[@"page"];
         NSString* pageSize_str = params[@"pageSize"];
         AMapTrackQueryTrackHistoryAndDistanceRequest *request = [[AMapTrackQueryTrackHistoryAndDistanceRequest alloc] init];
-        if (sid_str != nil) {
+        if (![sid_str isKindOfClass:[NSNull class]]) {
             [request setServiceID:sid_str];
         }
-        if (tid_str != nil) {
+        if (![tid_str isKindOfClass:[NSNull class]]) {
             [request setTerminalID:tid_str];
         }
-        if (startTime_str != nil && endTime_str != nil) {
+        if (![startTime_str isKindOfClass:[NSNull class]] && ![endTime_str isKindOfClass:[NSNull class]]) {
             [request setStartTime:[startTime_str longLongValue]];
             [request setEndTime:[endTime_str longLongValue]];
         }
         NSString* correctionMode = @"n";
-        if (correction_str != nil && [correction_str intValue] == 1) {
+        if (![correction_str isKindOfClass:[NSNull class]] && [correction_str intValue] == 1) {
             correctionMode = @"driving";
         }
         [request setCorrectionMode:correctionMode];
-        if (recoup_str != nil && [recoup_str intValue] == 1) {
+        if (![recoup_str isKindOfClass:[NSNull class]] && [recoup_str intValue] == 1) {
             [request setRecoupMode:AMapTrackRecoupModeDriving];
         }else{
             [request setRecoupMode:AMapTrackRecoupModeNone];
         }
         NSUInteger uint_gap = [gap_str integerValue];
         [request setRecoupGap:uint_gap];
-        if (order_str != nil) {
+        if (![order_str isKindOfClass:[NSNull class]]) {
             [request setSortType:[order_str intValue]];
         }
-        if (page_str != nil && pageSize_str != nil) {
+        if (![page_str isKindOfClass:[NSNull class]] && ![pageSize_str isKindOfClass:[NSNull class]]) {
             NSUInteger uint_page = [page_str integerValue];
             NSUInteger uint_pageSize = [pageSize_str integerValue];
             [request setPageIndex:uint_page];
@@ -260,34 +260,34 @@ static AMapTrackManager* trackManager;
         NSString* page_str = params[@"page"];
         NSString* pageSize_str = params[@"pageSize"];
         AMapTrackQueryTrackInfoRequest *request = [[AMapTrackQueryTrackInfoRequest alloc] init];
-        if (sid_str != nil) {
+        if (![sid_str isKindOfClass:[NSNull class]]) {
             [request setServiceID:sid_str];
         }
-        if (tid_str != nil) {
+        if (![tid_str isKindOfClass:[NSNull class]]) {
             [request setTerminalID:tid_str];
         }
-        if (startTime_str != nil && endTime_str != nil) {
+        if (![startTime_str isKindOfClass:[NSNull class]] && ![endTime_str isKindOfClass:[NSNull class]]) {
             [request setStartTime:[startTime_str longLongValue]];
             [request setEndTime:[endTime_str longLongValue]];
         }
         NSString* correctionMode = @"n";
-        if (correction_str != nil && [correction_str intValue] == 1) {
+        if (![correction_str isKindOfClass:[NSNull class]] && [correction_str intValue] == 1) {
             correctionMode = @"driving";
         }
         [request setCorrectionMode:correctionMode];
-        if (recoup_str != nil && [recoup_str intValue] == 1) {
+        if (![recoup_str isKindOfClass:[NSNull class]] && [recoup_str intValue] == 1) {
             [request setRecoupMode:AMapTrackRecoupModeDriving];
         }else{
             [request setRecoupMode:AMapTrackRecoupModeNone];
         }
-        if (gap_str != nil) {
+        if (![gap_str isKindOfClass:[NSNull class]]) {
             NSUInteger uint_gap = [gap_str integerValue];
             [request setRecoupGap:uint_gap];
         }
         if (ispoint != nil) {
             [request setContainPoints:ispoint];
         }
-        if (page_str != nil && pageSize_str != nil) {
+        if (![page_str isKindOfClass:[NSNull class]] && ![pageSize_str isKindOfClass:[NSNull class]]) {
             NSUInteger uint_page = [page_str integerValue];
             NSUInteger uint_pageSize = [pageSize_str intValue];
             [request setPageIndex:uint_page];
