@@ -15,16 +15,18 @@ static AMapTrackManager* trackManager;
 
 - (void)handleMethodCall:(FlutterMethodCall *)call result:(FlutterResult)result {
     NSDictionary<NSString*,id>* params = call.arguments;
+    //判断为空
     if ([@"setIOSApiKey" isEqualToString:call.method]) {
         NSString* apiKey = params[@"apiKey"];
-        NSLog(@"setIOSApiKey");
+        NSLog(@"setIOSApiKey: %@", apiKey);
         if (apiKey != nil) {
             NSLog(@"apikey:\(apiKey!)");
             [AMapServices sharedServices].apiKey = apiKey;
         }
     } else if ([@"initWithServiceId" isEqualToString:call.method]) {
-        int sid = params[@"sid"];
-        if (sid != nil) {
+        NSString* sid_str = params[@"sid"];
+        if (sid_str != nil) {
+            int sid = [sid_str intValue];
             AMapTrackManagerOptions * option = [[AMapTrackManagerOptions alloc] init];
             [option setServiceID:[NSString stringWithFormat:@"%d", sid]];
             NSLog(@"%@", [@"sid: " stringByAppendingString:option.serviceID]);
@@ -32,27 +34,31 @@ static AMapTrackManager* trackManager;
             [trackManager setDelegate:self];
         }
     } else if ([@"setCacheSize" isEqualToString:call.method]) {
-        int cacheSize = params[@"cacheSize"];
-        if (cacheSize != nil) {
+        NSString* cacheSize_str = params[@"cacheSize"];
+        if (cacheSize_str != nil) {
+            int cacheSize = [cacheSize_str intValue];
             [trackManager setLocalCacheMaxSize:cacheSize];
         }
     } else if ([@"setInterval" isEqualToString:call.method]) {
-        int gatherInterval = params[@"gatherInterval"];
-        int packInterval = params[@"packInterval"];
-        if (gatherInterval != nil && packInterval != nil) {
+        NSString* gatherInterval_str = params[@"gatherInterval"];
+        NSString* packInterval_str = params[@"packInterval"];
+        if (gatherInterval_str != nil && packInterval_str != nil) {
+            int gatherInterval = [gatherInterval_str intValue];
+            int packInterval = [packInterval_str intValue];
             [trackManager changeGatherAndPackTimeInterval:gatherInterval packTimeInterval:packInterval];
         }
     } else if ([@"setIOSOption" isEqualToString:call.method]) {
         bool allowsBackgroundLocationUpdates = params[@"allowsBackgroundLocationUpdates"];
         bool pausesLocationUpdatesAutomatically = params[@"pausesLocationUpdatesAutomatically"];
-        if ( allowsBackgroundLocationUpdates != nil) {
+        if (allowsBackgroundLocationUpdates != nil) {
             [trackManager setAllowsBackgroundLocationUpdates:allowsBackgroundLocationUpdates];
         }
         if (pausesLocationUpdatesAutomatically != nil) {
             [trackManager setPausesLocationUpdatesAutomatically:pausesLocationUpdatesAutomatically];
         }
-        int activityType = params[@"activityType"];
-        if (activityType != nil) {
+        NSString* activityType_str = params[@"activityType"];
+        if (activityType_str != nil) {
+            int activityType = [activityType_str intValue];
             switch (activityType) {
                 case 0:
                     [trackManager setActivityType:CLActivityTypeAutomotiveNavigation];
@@ -72,12 +78,12 @@ static AMapTrackManager* trackManager;
             [trackManager setActivityType:CLActivityTypeAutomotiveNavigation];
         }
     } else if ([@"addTerminal" isEqualToString:call.method]) {
-        int sid = params[@"sid"];
+        NSString* sid_str = params[@"sid"];
         NSString* terminal = params[@"terminal"];
         NSString* terminalDesc = params[@"terminalDesc"];
         AMapTrackAddTerminalRequest *request = [[AMapTrackAddTerminalRequest alloc] init];
-        if (sid != nil) {
-            [request setServiceID:[NSString stringWithFormat:@"%d", sid]];
+        if (sid_str != nil) {
+            [request setServiceID:sid_str];
         }
         if (terminal != nil) {
             [request setTerminalName:terminal];
@@ -87,50 +93,50 @@ static AMapTrackManager* trackManager;
             [trackManager AMapTrackAddTerminal:request];
         }
     } else if ([@"queryTerminal" isEqualToString:call.method]) {
-        int sid = params[@"sid"];
+        NSString* sid_str = params[@"sid"];
         NSString* terminal = params[@"terminal"];
-        int terminalId = params[@"terminalId"];
+        NSString* terminalId_str = params[@"terminalId"];
         AMapTrackQueryTerminalRequest * request = [[AMapTrackQueryTerminalRequest alloc] init];
-        if (sid != nil) {
-            [request setServiceID:[NSString stringWithFormat:@"%d", sid]];
+        if (sid_str != nil) {
+            [request setServiceID:sid_str];
         }
         if (terminal != nil) {
             [request setTerminalName:terminal];
         }
-        if (terminalId != nil) {
-            [request setTerminalID:[NSString stringWithFormat:@"%d", terminalId]];
+        if (terminalId_str != nil) {
+            [request setTerminalID:terminalId_str];
         }
-        [trackManager AMapTrackAddTerminal:request];
+        [trackManager AMapTrackQueryTerminal:request];
     } else if ([@"addTrack" isEqualToString:call.method]) {
-        int sid = params[@"sid"];
-        int tid = params[@"tid"];
+        NSString* sid_str = params[@"sid"];
+        NSString* tid_str = params[@"tid"];
         AMapTrackAddTrackRequest* request = [[AMapTrackAddTrackRequest alloc] init];
-        if (sid != nil) {
-            [request setServiceID:[NSString stringWithFormat:@"%d", sid]];
+        if (sid_str != nil) {
+            [request setServiceID:sid_str];
         }
-        if (tid != nil) {
-            [request setTerminalID:[NSString stringWithFormat:@"%d", tid]];
+        if (tid_str != nil) {
+            [request setTerminalID:tid_str];
         }
         [trackManager AMapTrackAddTrack:request];
     } else if ([@"deleteTrack" isEqualToString:call.method]) {
-        int tid = params[@"tid"];
-        int trid = params[@"trid"];
+        NSString* tid_str = params[@"tid"];
+        NSString* trid_str = params[@"trid"];
         AMapTrackDeleteTrackRequest *request = [[AMapTrackDeleteTrackRequest alloc] init];
-        if (tid != nil && trid != nil) {
-            [request setTerminalID:[NSString stringWithFormat:@"%d", tid]];
-            [request setTrackID:[NSString stringWithFormat:@"%d", trid]];
+        if (tid_str != nil && trid_str != nil) {
+            [request setTerminalID:tid_str];
+            [request setTrackID:trid_str];
         }
         [trackManager AMapTrackDeleteTrack:request];
     } else if ([@"startTrack" isEqualToString:call.method]) {
-        int tid = params[@"tid"];
-        int trackId = params[@"trackId"];
+        NSString* tid_str = params[@"tid"];
+        NSString* trackId_str = params[@"trackId"];
         AMapTrackManagerServiceOption * option = [[AMapTrackManagerServiceOption alloc] init];
-        if (tid != nil) {
-            [option setTerminalID:[NSString stringWithFormat:@"%d", tid]];
+        if (tid_str != nil) {
+            [option setTerminalID:tid_str];
         }
         [trackManager startServiceWithOptions:option];
-        if (trackId != nil) {
-            [trackManager setTrackID:[NSString stringWithFormat:@"%d", trackId]];
+        if (trackId_str != nil) {
+            [trackManager setTrackID:trackId_str];
         }
     } else if ([@"stopTrack" isEqualToString:call.method]) {
         [trackManager stopService];
@@ -141,149 +147,149 @@ static AMapTrackManager* trackManager;
     } else if ([@"getTrackId" isEqualToString:call.method]) {
         result([trackManager trackID]);
     } else if ([@"setTrackId" isEqualToString:call.method]) {
-        int trackId = params[@"trackId"];
-        if (trackId != nil) {
-            [trackManager setTrackID:[NSString stringWithFormat:@"%d", trackId]];
+        NSString* trackId_str = params[@"trackId"];
+        if (trackId_str != nil) {
+            [trackManager setTrackID:trackId_str];
         }
     } else if ([@"queryLatestPoint" isEqualToString:call.method]) {
-        int sid = params[@"sid"];
-        int tid = params[@"tid"];
-        int trid = params[@"trid"];
-        int correction = params[@"correction"];
+        NSString* sid_str = params[@"sid"];
+        NSString* tid_str = params[@"tid"];
+        NSString* trid_str = params[@"trid"];
+        NSString* correction_str = params[@"correction"];
         AMapTrackQueryLastPointRequest * request = [[AMapTrackQueryLastPointRequest alloc] init];
-        if (sid != nil) {
-            [request setServiceID:[NSString stringWithFormat:@"%d", sid]];
+        if (sid_str != nil) {
+            [request setServiceID:sid_str];
         }
-        if (tid != nil) {
-            [request setTerminalID:[NSString stringWithFormat:@"%d", tid]];
+        if (tid_str != nil) {
+            [request setTerminalID:tid_str];
         }
-        if (trid != nil) {
-            [request setTrackID:[NSString stringWithFormat:@"%d", trid]];
+        if (trid_str != nil) {
+            [request setTrackID:trid_str];
         }
         NSString* correctionMode = @"n";
-        if (correction != nil && correction == 1) {
+        if (correction_str != nil && [correction_str intValue] == 1) {
             correctionMode = @"driving";
         }
         [request setCorrectionMode:correctionMode];
         [trackManager AMapTrackQueryLastPoint:request];
     } else if ([@"queryDistance" isEqualToString:call.method]) {
-        int sid = params[@"sid"];
-        int tid = params[@"tid"];
-        int trid = params[@"trid"];
-        long startTime = params[@"startTime"];
-        long endTime = params[@"endTime"];
-        int correction = params[@"correction"];
-        int recoup = params[@"recoup"];
-        int gap = params[@"gap"];
+        NSString* sid_str = params[@"sid"];
+        NSString* tid_str = params[@"tid"];
+        NSString* trid_str = params[@"trid"];
+        NSString* startTime_str = params[@"startTime"];
+        NSString* endTime_str = params[@"endTime"];
+        NSString* correction_str = params[@"correction"];
+        NSString* recoup_str = params[@"recoup"];
+        NSString* gap_str = params[@"gap"];
         AMapTrackQueryTrackDistanceRequest * request = [[AMapTrackQueryTrackDistanceRequest alloc] init];
-        if (sid != nil) {
-            [request setServiceID:[NSString stringWithFormat:@"%d", sid]];
+        if (sid_str != nil) {
+            [request setServiceID:sid_str];
         }
-        if (tid != nil && trid != nil && startTime != nil && endTime != nil) {
-            [request setTerminalID:[NSString stringWithFormat:@"%d", tid]];
-            [request setTrackID:[NSString stringWithFormat:@"%d", trid]];
-            [request setStartTime:startTime];
-            [request setEndTime:endTime];
+        if (tid_str != nil && trid_str != nil && startTime_str != nil && endTime_str != nil) {
+            [request setTerminalID:tid_str];
+            [request setTrackID:trid_str];
+            [request setStartTime:[startTime_str longLongValue]];
+            [request setEndTime:[endTime_str longLongValue]];
             NSString* correctionMode = @"n";
-            if (correction != nil && correction == 1) {
+            if (correction_str != nil && [correction_str intValue] == 1) {
                 correctionMode = @"driving";
             }
             [request setCorrectionMode:correctionMode];
-            if (recoup != nil && recoup == 1) {
+            if (recoup_str != nil && [recoup_str intValue] == 1) {
                 [request setRecoupMode:AMapTrackRecoupModeDriving];
             } else {
                 [request setRecoupMode:AMapTrackRecoupModeNone];
             }
-            NSUInteger uint_gap = gap;
+            NSUInteger uint_gap = [gap_str integerValue];
             [request setRecoupGap:uint_gap];
         }
         [trackManager AMapTrackQueryTrackDistance:request];
     } else if ([@"queryHistoryTrack" isEqualToString:call.method]) {
-        int sid = params[@"sid"];
-        int tid = params[@"tid"];
-        long startTime = params[@"startTime"];
-        long endTime = params[@"endTime"];
-        int correction = params[@"correction"];
-        int recoup = params[@"recoup"];
-        int gap = params[@"gap"];
-        int order = params[@"order"];
-        int page = params[@"page"];
-        int pageSize = params[@"pageSize"];
+        NSString* sid_str = params[@"sid"];
+        NSString* tid_str = params[@"tid"];
+        NSString* startTime_str = params[@"startTime"];
+        NSString* endTime_str = params[@"endTime"];
+        NSString* correction_str = params[@"correction"];
+        NSString* recoup_str = params[@"recoup"];
+        NSString* gap_str = params[@"gap"];
+        NSString* order_str = params[@"order"];
+        NSString* page_str = params[@"page"];
+        NSString* pageSize_str = params[@"pageSize"];
         AMapTrackQueryTrackHistoryAndDistanceRequest *request = [[AMapTrackQueryTrackHistoryAndDistanceRequest alloc] init];
-        if (sid != nil) {
-            [request setServiceID:[NSString stringWithFormat:@"%d", sid]];
+        if (sid_str != nil) {
+            [request setServiceID:sid_str];
         }
-        if (tid != nil) {
-            [request setTerminalID:[NSString stringWithFormat:@"%d", tid]];
+        if (tid_str != nil) {
+            [request setTerminalID:tid_str];
         }
-        if (startTime != nil && endTime != nil) {
-            [request setStartTime:startTime];
-            [request setEndTime:endTime];
+        if (startTime_str != nil && endTime_str != nil) {
+            [request setStartTime:[startTime_str longLongValue]];
+            [request setEndTime:[endTime_str longLongValue]];
         }
         NSString* correctionMode = @"n";
-        if (correction != nil && correction == 1) {
+        if (correction_str != nil && [correction_str intValue] == 1) {
             correctionMode = @"driving";
         }
         [request setCorrectionMode:correctionMode];
-        if (recoup != nil && recoup == 1) {
+        if (recoup_str != nil && [recoup_str intValue] == 1) {
             [request setRecoupMode:AMapTrackRecoupModeDriving];
         }else{
             [request setRecoupMode:AMapTrackRecoupModeNone];
         }
-        NSUInteger uint_gap = gap;
+        NSUInteger uint_gap = [gap_str integerValue];
         [request setRecoupGap:uint_gap];
-        if (order != nil) {
-            [request setSortType:order];
+        if (order_str != nil) {
+            [request setSortType:[order_str intValue]];
         }
-        if (page != nil && pageSize != nil) {
-            NSUInteger uint_page = page;
-            NSUInteger uint_pageSize = pageSize;
+        if (page_str != nil && pageSize_str != nil) {
+            NSUInteger uint_page = [page_str integerValue];
+            NSUInteger uint_pageSize = [pageSize_str integerValue];
             [request setPageIndex:uint_page];
             [request setPageSize:uint_pageSize];
         }
         [trackManager AMapTrackQueryTrackHistoryAndDistance:request];
     } else if ([@"queryTerminalTrack" isEqualToString:call.method]) {
-        int sid = params[@"sid"];
-        int tid = params[@"tid"];
-        long startTime = params[@"startTime"];
-        long endTime = params[@"endTime"];
-        int correction = params[@"correction"];
-        int recoup = params[@"recoup"];
-        int gap = params[@"gap"];
+        NSString* sid_str = params[@"sid"];
+        NSString* tid_str = params[@"tid"];
+        NSString* startTime_str = params[@"startTime"];
+        NSString* endTime_str = params[@"endTime"];
+        NSString* correction_str = params[@"correction"];
+        NSString* recoup_str = params[@"recoup"];
+        NSString* gap_str = params[@"gap"];
         bool ispoint = params[@"ispoint"];
-        int page = params[@"page"];
-        int pageSize = params[@"pageSize"];
+        NSString* page_str = params[@"page"];
+        NSString* pageSize_str = params[@"pageSize"];
         AMapTrackQueryTrackInfoRequest *request = [[AMapTrackQueryTrackInfoRequest alloc] init];
-        if (sid != nil) {
-            [request setServiceID:[NSString stringWithFormat:@"%d", sid]];
+        if (sid_str != nil) {
+            [request setServiceID:sid_str];
         }
-        if (tid != nil) {
-            [request setTerminalID:[NSString stringWithFormat:@"%d", tid]];
+        if (tid_str != nil) {
+            [request setTerminalID:tid_str];
         }
-        if (startTime != nil && endTime != nil) {
-            [request setStartTime:startTime];
-            [request setEndTime:endTime];
+        if (startTime_str != nil && endTime_str != nil) {
+            [request setStartTime:[startTime_str longLongValue]];
+            [request setEndTime:[endTime_str longLongValue]];
         }
         NSString* correctionMode = @"n";
-        if (correction != nil && correction == 1) {
+        if (correction_str != nil && [correction_str intValue] == 1) {
             correctionMode = @"driving";
         }
         [request setCorrectionMode:correctionMode];
-        if (recoup != nil && recoup == 1) {
+        if (recoup_str != nil && [recoup_str intValue] == 1) {
             [request setRecoupMode:AMapTrackRecoupModeDriving];
         }else{
             [request setRecoupMode:AMapTrackRecoupModeNone];
         }
-        if (gap != nil) {
-            NSUInteger uint_gap = gap;
+        if (gap_str != nil) {
+            NSUInteger uint_gap = [gap_str integerValue];
             [request setRecoupGap:uint_gap];
         }
         if (ispoint != nil) {
             [request setContainPoints:ispoint];
         }
-        if (page != nil && pageSize != nil) {
-            NSUInteger uint_page = page;
-            NSUInteger uint_pageSize = pageSize;
+        if (page_str != nil && pageSize_str != nil) {
+            NSUInteger uint_page = [page_str integerValue];
+            NSUInteger uint_pageSize = [pageSize_str intValue];
             [request setPageIndex:uint_page];
             [request setPageSize:uint_pageSize];
         }
@@ -293,8 +299,14 @@ static AMapTrackManager* trackManager;
     } else {
         result(FlutterMethodNotImplemented);
     }
-    
-    
+}
+
+- (BOOL)isNotNullValue:(NSString*)key from:(NSDictionary<NSString*,id>*) params {
+    id value = params[key];
+    if (value == nil || [value isEqual:[NSNull null]]) {
+        return NO;
+    }
+    return YES;
 }
 
 //delegate

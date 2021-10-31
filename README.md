@@ -27,6 +27,10 @@ package](https://img.shields.io/pub/v/flutter_amap_track.svg)](https://pub.dartl
 
 ### iOS
 
+#### 添加时注意：
+1. 删除`flutter_amap_track-umbrella.h` 文件中的 `#import "ObjFlutterAmapTrackPlugin.h"` 这行代码。
+2. 点击Pod项目，选择`flutter_amap_track`这个target，选择`Build Phases`, 点开`Headers`，移动`ObjFlutterAmapTrackPlugin.h`文件到`Private`下。
+
 #### 更改info.plist 及 配置后台定位
 在info.plist的字段添加定位权限的申请及配置后台定位能力，配置方式请参考[iOS 猎鹰SDK 手动部署](https://developer.amap.com/api/ios-track/guide/create-project/manual-configuration)部分说明
 
