@@ -346,13 +346,12 @@ NSString *trackTag = @"OnTrackListener";
         NSMutableArray* list = [[NSMutableArray alloc] init];
         if ([response terminals] != nil) {
             for (AMapTrackTerminal *terminal in [response terminals]) {
-                NSMutableDictionary * t = [[NSMutableDictionary alloc] init];
                 [resultData setValue:[terminal tid] forKey:@"tid"];
                 [resultData setValue:[terminal name] forKey:@"name"];
                 [resultData setValue:[terminal desc] forKey:@"desc"];
                 [resultData setValue:[NSString stringWithFormat:@"%lld", [terminal createTime]] forKey:@"createTime"];
                 [resultData setValue:[NSString stringWithFormat:@"%lld", [terminal locateTime]] forKey:@"locateTime"];
-                [list addObject:t];
+                [list addObject:resultData];
             }
         }
         [channel invokeMethod:[trackTag stringByAppendingString:@"#onQueryTerminalCallback"] arguments:list];
